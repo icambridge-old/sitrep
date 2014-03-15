@@ -1,5 +1,21 @@
 {{define "title"}}SitRep, Jenkins in depth{{end}}
 
 {{define "body"}}
-  Hello World!
+ <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Link</th>        
+    </thead>
+    <tbody>
+        {{range .Jobs}}
+            <tr>
+              <td>{{.Name}}</td>
+              <td>{{.Color}}</td>
+              <td>{{.Url}}</td>
+             </tr>
+        {{end}}
+    </tbody>
+</table>
 {{end}}
