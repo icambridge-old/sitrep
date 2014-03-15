@@ -7,6 +7,7 @@ import (
   "net/http"
   "html/template"
   "fmt"
+  "bytes"
 )
 
 func main() {
@@ -23,24 +24,12 @@ func main() {
 
 
 func index(w http.ResponseWriter, r *http.Request) {
-  jobView, _ := genkins.GetJobView()
-  /*
-  numberOfJobs := len(jobView.Jobs)
-
-	for i := 0; i < numberOfJobs; i++ {
-		status := ""
-		switch jobView.Jobs[i].Color {
-		case "red":
-			status = "Failure"
-		case "blue", "green":
-			status = "Sucess"
-		default:
-			status = "Unknown"
-		}
-
-		log.Println(fmt.Sprintf("Build - %s - %s\r\n", jobView.Jobs[i].Name, status))
-	}
- */
+  jobView, err := genkins.GetJobView()
+ 
+  if err != nil {
+    displayError(w)  
+    return
+  }
   
   displayPage(w, "index", map[string]interface{}{"Jobs" : jobView.Jobs})
 }
@@ -51,7 +40,11 @@ func about(w http.ResponseWriter, r *http.Request) {
 
 func errorpage(w http.ResponseWriter, r *http.Request) {
 
-  displayPage(w, "error", map[string]interface{}{})
+    displayError(w)  
+}
+
+func displayError(w http.ResponseWriter) {
+     http.Error(w, http.StatusText(500), 500)
 }
 
 func displayPage(w http.ResponseWriter, template string, data map[string]interface{}) {
