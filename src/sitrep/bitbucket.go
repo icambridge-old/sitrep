@@ -8,6 +8,7 @@ import (
 )
 
 func BitbucketHook(w http.ResponseWriter, r *http.Request) {
+  // TODO move logic to gobucket
   log.Println("=== START OF BITBUCKET ===")
   r.ParseForm()
   log.Println(r.Form["payload"][0])

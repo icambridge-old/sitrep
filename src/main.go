@@ -12,6 +12,7 @@ func main() {
   rtr.HandleFunc("/", sitrep.Index).Methods("GET")
   rtr.HandleFunc("/about", sitrep.About).Methods("GET")
   rtr.HandleFunc("/bitbucket", sitrep.BitbucketHook).Methods("POST")
+  rtr.HandleFunc("/jenkins", sitrep.JenkinsHook).Methods("POST")
 
   http.Handle("/", rtr)
 
