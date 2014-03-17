@@ -1,5 +1,18 @@
 package gobucket
 
+import ( 
+  "encoding/json"
+)
+
+func GetHookData(payload []byte) (*Hook, error) {
+
+  var h Hook
+  
+  err := json.Unmarshal(payload, &h)
+  
+  return &h, err
+}
+
 type Hook struct {
   Repository Repository `json:"repository"`
   Truncated bool `json:"truncated"`

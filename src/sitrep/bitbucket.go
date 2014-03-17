@@ -2,18 +2,17 @@ package sitrep
 
 import (
   "log"
-  "encoding/json"
   "net/http"
   "github.com/icambridge/gobucket"
 )
 
 func BitbucketHook(w http.ResponseWriter, r *http.Request) {
-  // TODO move logic to gobucket
   log.Println("=== START OF BITBUCKET ===")
   r.ParseForm()
-  log.Println(r.Form["payload"][0])
-  var h gobucket.Hook
-  err := json.Unmarshal([]byte(r.Form["payload"][0]), &h)
+  payload := []byte(r.Form["payload"][0])
+  
+  h, err := gobucket.GetHookData(payload)
+  
   if err != nil {
     log.Println(err)
     return
