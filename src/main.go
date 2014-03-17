@@ -2,6 +2,7 @@ package main
 
 import (
   "github.com/gorilla/mux"
+  "github.com/icambridge/gobucket"
   "log"
   "net/http"
   "sitrep"
@@ -20,3 +21,6 @@ func main() {
   http.ListenAndServe(":47624", nil)
 }
 
+func init() {
+  gobucket.SetRequest(bitbucketUsername, bitbucketPassword)
+}
