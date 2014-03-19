@@ -7,6 +7,34 @@ import (
   "encoding/json"
 )
 
+type RepositoryService struct {
+    Client *Client
+}
+
+func (rs *RepositoryService) Get(user string, repoName string) *Repository {
+  
+   url := fmt.Sprintf("https://bitbucket.org/api/2.0/repositories/%s/%s", user, repoName)
+   resp := rs.Client.Request.get(url)
+  
+	var repo Repository
+	body := &bytes.Buffer{}
+	_, err := body.ReadFrom(resp.Body)
+
+	if err != nil {
+		log.Println(err)
+	}
+	resp.Body.Close()
+  
+	dec := json.NewDecoder(body)
+	err = dec.Decode(&repo)
+	
+	// TODO move
+  repo.Owner = user
+  repo.Slug = repoName
+  repo.Request = rs.Client.Request
+	return &repo
+}
+
 type Repository struct {
 	Website     string `json:"website"`
 	Fork        bool   `json:"fork"`
@@ -35,7 +63,7 @@ func (r *Repository) GetPullRequestForBranch(branch string) *PullRequest {
 func (r *Repository) GetPullRequests() []PullRequest {
   
     log.Println(r.Owner)
-    log.Println(r.Name)
+    log.Println(r.Slug)
 	url := fmt.Sprintf("https://bitbucket.org/api/2.0/repositories/%s/%s/pullrequests/", r.Owner, r.Slug)
 	resp := r.Request.get(url)
 

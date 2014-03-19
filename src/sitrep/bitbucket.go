@@ -3,8 +3,10 @@ package sitrep
 import (
   "log"
   "net/http"
-  "github.com/icambridge/gobucket"
+  "github.com/icambridge/gobucket"  
+  "github.com/gorilla/mux"
 )
+
 
 func BitbucketHook(w http.ResponseWriter, r *http.Request) {
   log.Println("=== START OF BITBUCKET ===")
@@ -25,6 +27,18 @@ func BitbucketHook(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func BitbucketListPullRequests(w http.ResponseWriter, r *http.Request) {
+  
+  params := mux.Vars(r)
+  repo := params["repo"]
+  c := gobucket.GetClient(bitbucketUsername, bitbucketPassword)
+  pr := c.Repository.Get(bitbucketGroup, repo).GetPullRequests()
+
+  log.Println(pr)
+  
+  displayPage(w, "pullrequests", map[string]interface{}{"prs": pr})
+}
+
 func init()  {
   
   gobucket.AddHook(Unapprove{})
@@ -44,3 +58,4 @@ func (u Unapprove) Exec(h *gobucket.Hook) {
   
   pr.Unapprove()
 }
+

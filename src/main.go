@@ -11,6 +11,7 @@ import (
 func main() {
   rtr := mux.NewRouter()
   rtr.HandleFunc("/", sitrep.Index).Methods("GET")
+  rtr.HandleFunc("/pullrequests/{repo}", sitrep.BitbucketListPullRequests).Methods("GET")
   rtr.HandleFunc("/about", sitrep.About).Methods("GET")
   rtr.HandleFunc("/bitbucket", sitrep.BitbucketHook).Methods("POST")
   rtr.HandleFunc("/jenkins", sitrep.JenkinsHook).Methods("POST")

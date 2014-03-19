@@ -11,6 +11,9 @@ func SetRequest(username string, password string) {
   request = Request{Username: username, Password: password}
 }
 
+func GetRequest() Request {
+  return request
+}
 
 func AddHook(c Callback) {
   callbacks = append(callbacks, c)

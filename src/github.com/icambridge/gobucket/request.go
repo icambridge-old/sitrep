@@ -7,11 +7,6 @@ import (
 	"strings"
 )
 
-type Client struct {
-  request *Request
-   
-}
-
 func NewRequest(uname string, pword string) *Request {
   return &Request{Username: uname, Password: pword}
 }
