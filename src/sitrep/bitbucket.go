@@ -50,6 +50,11 @@ type Unapprove struct {
 }
 
 func (u Unapprove) Exec(h *gobucket.Hook) {
+
+  if len(h.Commits) == 0 {
+    return
+  }
+
   pr := h.Repository.GetPullRequestForBranch(h.Commits[0].Branch)
   
   if pr == nil {
