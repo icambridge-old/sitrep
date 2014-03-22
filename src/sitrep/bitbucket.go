@@ -11,6 +11,7 @@ import (
 func BitbucketHook(w http.ResponseWriter, r *http.Request) {
   log.Println("=== START OF BITBUCKET ===")
   r.ParseForm()
+  log.Println(r.Form["payload"][0])
   payload := []byte(r.Form["payload"][0])
   
   h, err := gobucket.GetHookData(payload)
