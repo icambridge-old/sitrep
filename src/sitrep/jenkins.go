@@ -2,7 +2,6 @@ package sitrep
 
 import (
   "log"
-//  "io/ioutil"
   "encoding/json"
   "net/http"
   "github.com/icambridge/genkins"

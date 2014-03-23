@@ -27,3 +27,5 @@ _testmain.go
 src/config.go
 
 # Github code
+src/github.com/
+src/static/

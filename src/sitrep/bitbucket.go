@@ -3,65 +3,46 @@ package sitrep
 import (
   "log"
   "net/http"
-  "github.com/icambridge/gobucket"  
+  "encoding/json"
   "github.com/gorilla/mux"
+	"github.com/bradfitz/gomemcache/memcache"
+  "fmt"
 )
 
 
 func BitbucketHook(w http.ResponseWriter, r *http.Request) {
-  log.Println("=== START OF BITBUCKET ===")
   r.ParseForm()
   log.Println(r.Form["payload"][0])
-  payload := []byte(r.Form["payload"][0])
-  
-  h, err := gobucket.GetHookData(payload)
-  
-  if err != nil {
-    log.Println(err)
-    return
-  }
-  
-  gobucket.ProccessHook(h)
-  
-  log.Println("=== END OF BITBUCKET ===")
+
   displayPage(w, "about", map[string]interface{}{})
 }
 
 
 func BitbucketListPullRequests(w http.ResponseWriter, r *http.Request) {
-  
-  params := mux.Vars(r)
-  repo := params["repo"]
-  c := gobucket.GetClient(bitbucketUsername, bitbucketPassword)
-  pr := c.Repository.Get(bitbucketGroup, repo).GetPullRequests()
+	params := mux.Vars(r)
+	repo := params["repo"]
 
-  log.Println(pr)
-  
-  displayPage(w, "pullrequests", map[string]interface{}{"prs": pr})
+	item, err := memClient.Get("bitbucket.pull_reqests")
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	if item == nil {
+		prs, err := bitbucket.PullRequests.GetAll("workstars", repo)
+
+		if err != nil {
+			log.Printf("Tried to get pullrequests for %s but got %v", repo, err)
+		}
+		pullRequests := gobucketToSitRepMultiPrs(prs)
+
+		json, err := json.Marshal(pullRequests)
+		if err != nil {
+			log.Println(err)
+		}
+		item = &memcache.Item{Key: "bitbucket.pull_reqests", Value: json, Expiration: 300}
+		memClient.Set(item)
+	}
+
+	fmt.Fprint(w, string(item.Value))
 }
-
-func init()  {
-  
-  gobucket.AddHook(Unapprove{})
-  
-}
-
-type Unapprove struct {
-
-}
-
-func (u Unapprove) Exec(h *gobucket.Hook) {
-
-  if len(h.Commits) == 0 {
-    return
-  }
-
-  pr := h.Repository.GetPullRequestForBranch(h.Commits[0].Branch)
-  
-  if pr == nil {
-    return
-  }
-  
-  pr.Unapprove()
-}
-
