@@ -25,7 +25,9 @@ _testmain.go
 # Config
 
 src/config.go
+src/config.cfg
 
 # Github code
 src/github.com/
 src/static/
+
