@@ -2,11 +2,11 @@ package sitrep
 
 import (
 	"log"
-  	"encoding/json"
-  	"net/http"
-	"fmt"
-  	"github.com/icambridge/genkins"
+	"encoding/json"
+	"net/http"
+	"github.com/icambridge/genkins"
 	"github.com/bradfitz/gomemcache/memcache"
+	"sitrep/model"
 )
 
 func getJenkinsJobs() *memcache.Item {
@@ -41,25 +41,46 @@ func getJenkinsJobs() *memcache.Item {
 
 
 func JenkinsHook(w http.ResponseWriter, r *http.Request) {
-  // move logic to genkins
-  log.Println("==== START OF JENKINS ====")
-  p := make([]byte, r.ContentLength)
-  _, err := r.Body.Read(p)
-  if err != nil {
-        log.Println("Unable to unmarshall the JSON request", err);
-    return
-  }
-  var job genkins.Hook
-    err1 := json.Unmarshal(p, &job)
-    if err1 == nil {
-        log.Println(job)
-    } else {
-        log.Println("Unable to unmarshall the JSON request", err1);
-        return
 
-    }
+	job, err := genkins.GetHook(r)
 
+	if err != nil {
+		log.Println(err)
+	}
 
-  log.Println("==== END OF JENKINS ====")
+	info, err := jenkins.Builds.GetInfo(job.Build)
+	if err != nil {
+		log.Println(err)
+	}
+
+	branchName := info.GetBranchName()
+
+	b := &model.Build{
+		BuildId: job.Build.Number,
+		ApplicationName: job.Name,
+		Status: job.Build.Status,
+		Phase: job.Build.Phase,
+		Branch: branchName,
+	}
+
+	// TODO seperate out logic
+	err = buildModel.Save(b)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	owner, _ := cfg.String("bitbucket", owner)
+
+	pr, err := bitbucket.PullRequests.GetBranch(owner, b.ApplicationName, b.Branch)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = bitbucket.PullRequests.Approve(owner, b.ApplicationName, pr.Id)
+
+	if err != nil {
+		log.Println(err)
+	}
 }
-
