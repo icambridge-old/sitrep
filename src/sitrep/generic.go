@@ -1,15 +1,16 @@
 package sitrep
 
 import (
-//  "github.com/icambridge/genkins"
   "log"
   "net/http"
+  "html/template"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
-  log.Println("Called /")
+ 	log.Println("Called /")
+	jobsJson := string(getJenkinsJobs().Value)
 
-	displayPage(w, "index", map[string]interface{}{})
+	displayPage(w, "index", map[string]interface{}{"jobs": template.JS(jobsJson)})
 }
 
 func About(w http.ResponseWriter, r *http.Request) {

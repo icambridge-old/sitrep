@@ -2,6 +2,7 @@
 
 {{define "body"}}
 
+
 <div id="loading">
     <div class="progress progress-striped active">
         <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
@@ -22,16 +23,22 @@
 </script>
 
 <script type="text/template" id="repo-info">
-    <ul>
+    <a href="/">Back to List</a>
+    <div class="repo">
+        <header><%= name %></header>
 
-    <% _.each(pulls, function(pull_request){ %>
-        <li>
-            <div class="pull-request-info">
-                <%= pull_request.name %> By <%= pull_request.author %> From <%= pull_request.source %> going to <%= pull_request.destination %> - <a href='#pullrequest/<%= pull_request.id %>'>more</a>
-            </div>
-        </li>
-    <% }); %>
-    </ul>
+        <div class="pull_requests">
+            <% _.each(pulls, function(pull_request){ %>
+            <li>
+                <div class="pull-request-info">
+                    <%= pull_request.name %> By <%= pull_request.author %> From <%= pull_request.source %> going to <%= pull_request.destination %> - <a href='#pullrequest/<%= pull_request.id %>'>more</a>
+                </div>
+            </li>
+            <% }); %>
+        </div>
+
+    </div>
+
 </script>
 
 {{end}}

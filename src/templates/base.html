@@ -32,9 +32,13 @@
     </div>
   </div>  
   <!-- Latest compiled and minified JavaScript -->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
-  <script src="http://backbonejs.org/backbone-min.js"></script>
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/underscore-min.js"></script>
+  <script src="/js/backbone-min.js"></script>
+  <script>
+  var jobs = new Backbone.Collection;
+  jobs.reset({{ .jobs  }});
+</script>
   <script src="/js/bitbucket.js"></script>
   </body>
 </html>

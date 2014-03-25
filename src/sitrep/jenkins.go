@@ -9,8 +9,7 @@ import (
 	"github.com/bradfitz/gomemcache/memcache"
 )
 
-func AjaxJenkinsJobs(w http.ResponseWriter, r *http.Request) {
-
+func getJenkinsJobs() *memcache.Item {
 	keyStr := "jenkins.jobs.all"
 
 	item, err := memClient.Get(keyStr)
@@ -36,8 +35,9 @@ func AjaxJenkinsJobs(w http.ResponseWriter, r *http.Request) {
 		memClient.Set(item)
 	}
 
-	fmt.Fprint(w, string(item.Value))
+	return item
 }
+
 
 
 func JenkinsHook(w http.ResponseWriter, r *http.Request) {
