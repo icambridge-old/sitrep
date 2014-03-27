@@ -26,6 +26,7 @@ func init() {
 	bitbucketUser, _ := cfg.String("bitbucket", "username")
 	bitbucketPass, _ := cfg.String("bitbucket", "password")
 
+	jenkinsUser, _ := cfg.String("jenkins", "username")
 	jenkinsHost, _   := cfg.String("jenkins", "hostname")
 	jenkinsToken,_   := cfg.String("jenkins", "token")
 
@@ -35,7 +36,7 @@ func init() {
 	mysqlDatabase, _ := cfg.String("mysql", "database")
 	mysqlDsn := fmt.Sprintf("%s:%s@/%s", mysqlUsername, mysqlPassword, mysqlDatabase)
 
-	jenkins   = genkins.NewClient(jenkinsHost, jenkinsToken)
+	jenkins   = genkins.NewClient(jenkinsHost, jenkinsUser, jenkinsToken)
 	bitbucket = gobucket.NewClient(bitbucketUser, bitbucketPass)
 	memClient = memcache.New("127.0.0.1:11211")
 

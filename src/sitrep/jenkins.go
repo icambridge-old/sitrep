@@ -2,10 +2,13 @@ package sitrep
 
 import (
 	"log"
+	"fmt"
+	"strings"
 	"encoding/json"
 	"net/http"
 	"github.com/icambridge/genkins"
 	"github.com/bradfitz/gomemcache/memcache"
+	"github.com/gorilla/mux"
 	"sitrep/model"
 )
 
@@ -38,7 +41,20 @@ func getJenkinsJobs() *memcache.Item {
 	return item
 }
 
+func JenkinsBuild(w http.ResponseWriter, r *http.Request) {
 
+
+	params := mux.Vars(r)
+	repo := strings.ToLower(params["repo"])
+
+	p := map[string]string{
+		"branch": "develop",
+	}
+
+	jenkins.Builds.TriggerWithParameters(repo, p)
+
+	fmt.Fprint(w, "{\"status\":\"Success\"}")
+}
 
 func JenkinsHook(w http.ResponseWriter, r *http.Request) {
 
@@ -48,7 +64,7 @@ func JenkinsHook(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	info, err := jenkins.Builds.GetInfo(job.Build)
+	info, err := jenkins.Builds.GetInfo(&job.Build)
 	if err != nil {
 		log.Println(err)
 	}
@@ -63,6 +79,11 @@ func JenkinsHook(w http.ResponseWriter, r *http.Request) {
 		Branch: branchName,
 	}
 
+
+	if b.Phase != "FINISHED"  {
+		return
+	}
+
 	// TODO seperate out logic
 	err = buildModel.Save(b)
 
@@ -70,17 +91,18 @@ func JenkinsHook(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	owner, _ := cfg.String("bitbucket", owner)
+	if b.Status == "SUCCESS" {
+		owner, _ := cfg.String("bitbucket", "owner")
 
-	pr, err := bitbucket.PullRequests.GetBranch(owner, b.ApplicationName, b.Branch)
+		pr, err := bitbucket.PullRequests.GetBranch(owner, b.ApplicationName, b.Branch)
 
-	if err != nil {
-		log.Println(err)
-	}
+		if err != nil {
+			log.Println(err)
+		}
+		err = bitbucket.PullRequests.Approve(owner, b.ApplicationName, pr.Id)
 
-	err = bitbucket.PullRequests.Approve(owner, b.ApplicationName, pr.Id)
-
-	if err != nil {
-		log.Println(err)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 }
