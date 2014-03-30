@@ -46,9 +46,10 @@ func JenkinsBuild(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 	repo := strings.ToLower(params["repo"])
+	branch := strings.ToLower(params["branch"])
 
 	p := map[string]string{
-		"branch": "develop",
+		"branchName": branch,
 	}
 
 	jenkins.Builds.TriggerWithParameters(repo, p)
@@ -90,17 +91,21 @@ func JenkinsHook(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
+	owner, _ := cfg.String("bitbucket", "owner")
+
+	pr, err := bitbucket.PullRequests.GetBranch(owner, b.ApplicationName, b.Branch)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	if b.Status == "SUCCESS" {
-		owner, _ := cfg.String("bitbucket", "owner")
-
-		pr, err := bitbucket.PullRequests.GetBranch(owner, b.ApplicationName, b.Branch)
-
+		err = bitbucket.PullRequests.Approve(owner, b.ApplicationName, pr.Id)
 		if err != nil {
 			log.Println(err)
 		}
-		err = bitbucket.PullRequests.Approve(owner, b.ApplicationName, pr.Id)
-
+	} else if b.Status == "FAILURE" {
+		err = bitbucket.PullRequests.Unapprove(owner, b.ApplicationName, pr.Id)
 		if err != nil {
 			log.Println(err)
 		}

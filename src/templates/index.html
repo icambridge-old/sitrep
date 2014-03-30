@@ -80,9 +80,7 @@
                     <th>Name</th>
                     <th>Last Build Status</th>
                     <th>Build ID</th>
-                    <th>Build Log</th>
                     <th>Build Now</th>
-                    <th>Delete</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -97,16 +95,17 @@
                         }else {
                              label = "default"
                              glyphiconStatus = "remove"
-                        } %>
+                        }
+
+                        safeBranchName = branch.name.replace("/", "%2F")
+                %>
 
                     <tr>
                         <td><span class="glyphicon glyphicon-<%= glyphiconStatus %>"></span></td>
                         <td><%= branch.name %></td>
                         <td><span class="label label-<%= label %>"><%= branch.status %></span></td>
                         <td>#<%= branch.id %></td>
-                        <td><a href="#log/<%= name %>/<%= branch.id %>">View</a></td>
-                        <td><a href="#build/<%= name %>">Start</a></td>
-                        <td>Delete</td>
+                        <td><a href="#build/<%= name %>/<%= safeBranchName %>">Start</a></td>
                     </tr>
                 <% }); %>
                 </tbody>
