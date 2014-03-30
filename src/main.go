@@ -15,6 +15,7 @@ func main() {
   rtr := mux.NewRouter()
   rtr.HandleFunc("/", sitrep.Index).Methods("GET")
 	rtr.HandleFunc("/ajax/bitbucket/pullrequests/{repo}", sitrep.AjaxBitbucketRepo).Methods("GET")
+	rtr.HandleFunc("/ajax/bitbucket/pullrequests/{repo}/merge/{id}", sitrep.AjaxBitbucketMerge).Methods("GET")
 	rtr.HandleFunc("/jenkins", sitrep.JenkinsHook).Methods("POST")
 	rtr.HandleFunc("/jenkins/build/{repo}", sitrep.JenkinsBuild).Methods("GET")
   rtr.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
