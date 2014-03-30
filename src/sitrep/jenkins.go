@@ -99,6 +99,10 @@ func JenkinsHook(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
+	if pr == nil {
+		return
+	}
+
 	if b.Status == "SUCCESS" {
 		err = bitbucket.PullRequests.Approve(owner, b.ApplicationName, pr.Id)
 		if err != nil {
