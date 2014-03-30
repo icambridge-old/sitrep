@@ -4,7 +4,8 @@ import (
   "log"
   "net/http"
   "encoding/json"
-  "github.com/gorilla/mux"
+	"github.com/gorilla/mux"
+	"github.com/icambridge/gobucket"
   "github.com/bradfitz/gomemcache/memcache"
   "fmt"
 	"strings"
@@ -13,10 +14,18 @@ import (
 
 
 func BitbucketHook(w http.ResponseWriter, r *http.Request) {
-  r.ParseForm()
-  log.Println(r.Form["payload"][0])
+	r.ParseForm()
+	payload := []byte(r.Form["payload"][0])
 
-  displayPage(w, "about", map[string]interface{}{})
+	h, err := gobucket.GetHookData(payload)
+
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	hookProcessors.Process(h)
+
 }
 
 
@@ -108,4 +117,21 @@ func AjaxBitbucketMerge(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprint(w, `{"status":"success"}`)
+}
+type Unapprove struct {
+
+}
+
+func (u Unapprove) Exec(h *gobucket.Hook) {
+
+	bitbucketOwner, _ := cfg.String("bitbucket", "owner")
+
+	pr, err := bitbucket.PullRequests.GetBranch(bitbucketOwner, h.Repository.Slug, h.Commits[0].Branch)
+
+	if err != nil {
+		// handle error
+		log.Println(err)
+		return
+	}
+	bitbucket.PullRequests.Unapprove(bitbucketOwner, h.Repository.Slug, pr.Id)
 }

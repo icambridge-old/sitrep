@@ -16,9 +16,10 @@ func main() {
   rtr.HandleFunc("/", sitrep.Index).Methods("GET")
 	rtr.HandleFunc("/ajax/bitbucket/pullrequests/{repo}", sitrep.AjaxBitbucketRepo).Methods("GET")
 	rtr.HandleFunc("/ajax/bitbucket/pullrequests/{repo}/merge/{id}", sitrep.AjaxBitbucketMerge).Methods("GET")
+	rtr.HandleFunc("/bitbuckets/hook", sitrep.BitbucketHook).Methods("POST")
 	rtr.HandleFunc("/jenkins", sitrep.JenkinsHook).Methods("POST")
 	rtr.HandleFunc("/jenkins/build/{repo}/{branch:.*}", sitrep.JenkinsBuild).Methods("GET")
-  rtr.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
+    rtr.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 
   http.Handle("/", rtr)
 

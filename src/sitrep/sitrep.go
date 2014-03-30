@@ -18,9 +18,14 @@ var (
 	jenkins   *genkins.Client
 	db        *sql.DB
 	buildModel model.BuildModel
+	hookProcessors *gobucket.HookObserver
 )
 
 func init() {
+
+	hookProcessors = &gobucket.HookObserver{}
+	hookProcessors.Add(&Unapprove{})
+
 	cfg, _ = config.ReadDefault("config.cfg")
 
 	bitbucketUser, _ := cfg.String("bitbucket", "username")
