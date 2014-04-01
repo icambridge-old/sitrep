@@ -46,7 +46,7 @@ func JenkinsBuild(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 	repo := strings.ToLower(params["repo"])
-	branch := strings.ToLower(params["branch"])
+	branch := params["branch"]
 
 	p := map[string]string{
 		"branchName": branch,
