@@ -124,6 +124,10 @@ type Unapprove struct {
 
 func (u Unapprove) Exec(h *gobucket.Hook) {
 
+	if len(h.Commits) < 1 {
+		return
+	}
+
 	bitbucketOwner, _ := cfg.String("bitbucket", "owner")
 
 	pr, err := bitbucket.PullRequests.GetBranch(bitbucketOwner, h.Repository.Slug, h.Commits[0].Branch)
