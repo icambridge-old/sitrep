@@ -43,7 +43,7 @@
                     </tr>
                 </thead>
                 <tbody>
-            <% if (pulls.length > 1) { %>
+            <% if (pulls.length >= 1) { %>
             <% _.each(pulls, function(pull_request){ %>
                 <tr id="<%= name %>-<%= pull_request.id %>">
                     <td class="pr-id"><a href="<%= pull_request.url %>" target="_blank">#<%= pull_request.id %></a></td>
