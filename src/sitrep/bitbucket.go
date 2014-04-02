@@ -137,5 +137,10 @@ func (u Unapprove) Exec(h *gobucket.Hook) {
 		log.Println(err)
 		return
 	}
+
+	if pr != nil {
+		return
+	}
+
 	bitbucket.PullRequests.Unapprove(bitbucketOwner, h.Repository.Slug, pr.Id)
 }
