@@ -1,8 +1,8 @@
 package sitrep
 
 import (
-	"github.com/icambridge/gobucket"
 	"fmt"
+	"github.com/icambridge/gobucket"
 	"log"
 )
 
@@ -10,26 +10,25 @@ type PullRequestList struct {
 	Values []PullRequest `json:"values"`
 }
 
-
 type PullRequest struct {
-	Title string `json:"title"`
-	Author string `json:"author"`
-	Source string `json:"source"`
-	Destination string `json:"destination"`
-	Id int `json:"id"`
-	Approvals []Approval `json:"approvals"`
-	Url string `json:"url"`
+	Title       string     `json:"title"`
+	Author      string     `json:"author"`
+	Source      string     `json:"source"`
+	Destination string     `json:"destination"`
+	Id          int        `json:"id"`
+	Approvals   []Approval `json:"approvals"`
+	Url         string     `json:"url"`
 }
 
 type Approval struct {
 	Avatar string `json:"avatar"`
-	Name string `json:"name"`
+	Name   string `json:"name"`
 }
 
 type Branch struct {
-	Name string `json:"name"`
-	BuildId int `json:"build_id"`
-	Status string `json:"status"`
+	Name    string `json:"name"`
+	BuildId int    `json:"build_id"`
+	Status  string `json:"status"`
 }
 
 func gobucketToSitRepSinglePr(pr *gobucket.PullRequest) PullRequest {
@@ -44,13 +43,13 @@ func gobucketToSitRepSinglePr(pr *gobucket.PullRequest) PullRequest {
 
 	urlStr := fmt.Sprintf("http://bitbucket.org/%s/pull-request/%d", pr.Destination.Repository.FullName, pr.Id)
 	return PullRequest{
-		Title: pr.Title,
-		Author: pr.Author.DisplayName,
-		Source: pr.Source.Branch.Name,
+		Title:       pr.Title,
+		Author:      pr.Author.DisplayName,
+		Source:      pr.Source.Branch.Name,
 		Destination: pr.Destination.Branch.Name,
-		Id: pr.Id,
-		Approvals: approvals,
-		Url: urlStr,
+		Id:          pr.Id,
+		Approvals:   approvals,
+		Url:         urlStr,
 	}
 }
 
@@ -70,9 +69,9 @@ func gobucketToSitRepApproval(approvals []gobucket.User) []Approval {
 	output := []Approval{}
 	for _, approval := range approvals {
 
-		a := Approval {
+		a := Approval{
 			Avatar: approval.Links.Avatar.Href,
-			Name: approval.DisplayName,
+			Name:   approval.DisplayName,
 		}
 		output = append(output, a)
 	}
@@ -109,7 +108,7 @@ func gobucketToSitRepBranches(applicationName string, branches map[string]*gobuc
 }
 
 type RepoInfo struct {
-	Name string `json:"name"`
+	Name         string        `json:"name"`
 	PullRequests []PullRequest `json:"pulls"`
-	Branches []Branch `json:"branches"`
+	Branches     []Branch      `json:"branches"`
 }

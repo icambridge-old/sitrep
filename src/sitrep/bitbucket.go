@@ -1,24 +1,22 @@
 package sitrep
 
 import (
-  "log"
-  "net/http"
-  "encoding/json"
+	"encoding/json"
+	"fmt"
+	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/gorilla/mux"
 	"github.com/icambridge/gobucket"
-  "github.com/bradfitz/gomemcache/memcache"
-  "fmt"
-	"strings"
+	"log"
+	"net/http"
 	"strconv"
+	"strings"
 )
-
 
 func BitbucketHook(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	payload := []byte(r.Form["payload"][0])
 
 	h, err := gobucket.GetHookData(payload)
-
 
 	if err != nil {
 		log.Println(err)
@@ -27,7 +25,6 @@ func BitbucketHook(w http.ResponseWriter, r *http.Request) {
 	hookProcessors.Process(h)
 
 }
-
 
 func BitbucketListPullRequests(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
@@ -58,7 +55,6 @@ func BitbucketListPullRequests(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(item.Value))
 }
 
-
 func AjaxBitbucketRepo(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	repo := strings.ToLower(params["repo"])
@@ -70,7 +66,6 @@ func AjaxBitbucketRepo(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-
 
 	bitbucketOwner, _ := cfg.String("bitbucket", "owner")
 
@@ -100,7 +95,7 @@ func AjaxBitbucketRepo(w http.ResponseWriter, r *http.Request) {
 func AjaxBitbucketMerge(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	repo := strings.ToLower(params["repo"])
-	id, err   := strconv.Atoi(params["id"])
+	id, err := strconv.Atoi(params["id"])
 	if err != nil {
 		// handle error
 		log.Println(err)
@@ -118,8 +113,8 @@ func AjaxBitbucketMerge(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprint(w, `{"status":"success"}`)
 }
-type Unapprove struct {
 
+type Unapprove struct {
 }
 
 func (u Unapprove) Exec(h *gobucket.Hook) {

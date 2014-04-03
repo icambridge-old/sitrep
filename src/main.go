@@ -1,30 +1,25 @@
 package main
 
 import (
-
-  "github.com/gorilla/mux"
-  "log"
-  "net/http"
-  "sitrep"
-
+	"github.com/gorilla/mux"
+	"log"
+	"net/http"
+	"sitrep"
 )
 
 func main() {
 
-
-  rtr := mux.NewRouter()
-  rtr.HandleFunc("/", sitrep.Index).Methods("GET")
+	rtr := mux.NewRouter()
+	rtr.HandleFunc("/", sitrep.Index).Methods("GET")
 	rtr.HandleFunc("/ajax/bitbucket/pullrequests/{repo}", sitrep.AjaxBitbucketRepo).Methods("GET")
 	rtr.HandleFunc("/ajax/bitbucket/pullrequests/{repo}/merge/{id}", sitrep.AjaxBitbucketMerge).Methods("GET")
 	rtr.HandleFunc("/bitbuckets/hook", sitrep.BitbucketHook).Methods("POST")
 	rtr.HandleFunc("/jenkins", sitrep.JenkinsHook).Methods("POST")
 	rtr.HandleFunc("/jenkins/build/{repo}/{branch:.*}", sitrep.JenkinsBuild).Methods("GET")
-    rtr.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
+	rtr.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 
-  http.Handle("/", rtr)
+	http.Handle("/", rtr)
 
-  log.Println("Listening...")
-  http.ListenAndServe(":47624", nil)
+	log.Println("Listening...")
+	http.ListenAndServe(":47624", nil)
 }
-
-

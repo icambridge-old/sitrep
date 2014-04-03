@@ -1,15 +1,15 @@
 package sitrep
 
 import (
-	"log"
-	"fmt"
-	"strings"
 	"encoding/json"
-	"net/http"
-	"github.com/icambridge/genkins"
+	"fmt"
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/gorilla/mux"
+	"github.com/icambridge/genkins"
+	"log"
+	"net/http"
 	"sitrep/model"
+	"strings"
 )
 
 func getJenkinsJobs() *memcache.Item {
@@ -43,7 +43,6 @@ func getJenkinsJobs() *memcache.Item {
 
 func JenkinsBuild(w http.ResponseWriter, r *http.Request) {
 
-
 	params := mux.Vars(r)
 	repo := strings.ToLower(params["repo"])
 	branch := params["branch"]
@@ -73,15 +72,14 @@ func JenkinsHook(w http.ResponseWriter, r *http.Request) {
 	branchName := info.GetBranchName()
 
 	b := &model.Build{
-		BuildId: job.Build.Number,
+		BuildId:         job.Build.Number,
 		ApplicationName: job.Name,
-		Status: job.Build.Status,
-		Phase: job.Build.Phase,
-		Branch: branchName,
+		Status:          job.Build.Status,
+		Phase:           job.Build.Phase,
+		Branch:          branchName,
 	}
 
-
-	if b.Phase != "FINISHED"  {
+	if b.Phase != "FINISHED" {
 		return
 	}
 
