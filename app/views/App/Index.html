@@ -1,17 +1,6 @@
 {{set . "title" "Home"}}
 {{template "header.html" .}}
 
-<header class="hero-unit" style="background-color:#A9F16C">
-  <div class="container">
-    <div class="row">
-      <div class="hero-text">
-        <h1>It works oh!</h1>
-        <p></p>
-      </div>
-    </div>
-  </div>
-</header>
-
 <div class="container">
   <div class="row">
     <div class="span6">
@@ -20,4 +9,160 @@
   </div>
 </div>
 
+
+<div id="loading">
+    <div class="progress progress-striped active">
+        <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+             style="width: 100%">
+            <span class="sr-only">100% Complete</span>
+        </div>
+    </div>
+</div>
+<div id="content">
+    <div id="job-list" class="list-group">
+
+        <div></div>
+    </div>
+
+    <script type="text/template" id="jenkins-job">
+        <div class="job">
+            <a class="list-group-item" id="job-<%= name %>-link" href='#job/<%= name %>'><%= name %><span class="glyphicon glyphicon-chevron-right"></span></a>
+            <section class="list-group-item hidden" id="job-<%= name %>">
+            </section>
+        </div>
+    </script>
+
+    <script type="text/template" id="repo-info">
+
+        <section class="pull-requests">
+            <header class="h3">Pull Requests</header>
+
+            <table class="table table-hover pr-table">
+                <thead>
+                <tr>
+                    <th class="pr-id">ID</th>
+                    <th class="pr-title">Title</th>
+                    <th class="pr-other">Author</th>
+                    <th class="pr-other">Source</th>
+                    <th class="pr-other">Destination</th>
+                    <th class="pr-other">Approvals</th>
+                    <th class="pr-link"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <% if (pulls.length >= 1) { %>
+                <% _.each(pulls, function(pull_request){ %>
+                <tr id="<%= name %>-<%= pull_request.id %>">
+                    <td class="pr-id"><a href="<%= pull_request.url %>" target="_blank">#<%= pull_request.id %></a></td>
+                    <td class="pr-title"><%= pull_request.title %></td>
+                    <td class="pr-other"><%= pull_request.author %></td>
+                    <td class="pr-other"><%= pull_request.source %> </td>
+                    <td class="pr-other"><%= pull_request.destination %></td>
+                    <td class="pr-other">
+                        <ul class="avatars">
+                            <% _.each(pull_request.approvals, function(approval){ %>
+                            <li><img class="avatar" src="<%= approval.avatar %>" alt="<%= approval.name %>" width="25" height="25" data-toggle="tooltip" data-placement="top"  title="<%= approval.name %>" /></li>
+                            <% }); %>
+                        </ul>
+                    </td>
+                    <td class="pr-link"><a href="#merge/<%= name %>/<%= pull_request.id %>">Merge</a></td>
+                </tr>
+                <% }); %>
+                <% } else { %>
+                <tr>
+                    <td colspan="7">No open pull requests. YAY!</td>
+                </tr>
+                <% } %>
+                </tbody>
+            </table>
+        </section>
+
+
+        <section class="branches">
+            <header class="h3">Branches</header>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Last Build Status</th>
+                    <th>Build ID</th>
+                    <th>Build Now</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% _.each(branches, function(branch){ %>
+                <%
+                if (branch.status == "SUCCESS") {
+                label = "success"
+                glyphiconStatus = "ok"
+                } else if (branch.status == "FAILURE") {
+                label = "danger"
+                glyphiconStatus = "remove"
+                }else {
+                label = "default"
+                glyphiconStatus = "remove"
+                }
+
+                safeBranchName = branch.name.replace("/", "%2F")
+                %>
+
+                <tr>
+                    <td><span class="glyphicon glyphicon-<%= glyphiconStatus %>"></span></td>
+                    <td><%= branch.name %></td>
+                    <td><span class="label label-<%= label %>"><%= branch.status %></span></td>
+                    <td>#<%= branch.build_id %></td>
+                    <td id="<%= name %>-<%= branch.name %>"><a href="#build/<%= name %>/<%= safeBranchName %>">Start</a></td>
+                </tr>
+                <% }); %>
+                </tbody>
+            </table>
+        </section>
+
+    </script>
+    <style>
+        .avatars {
+        padding-left: 0;
+        }
+        .avatars li {
+        position: relative;
+        list-style: none;
+        display: block;
+        float: left;
+        padding: 2px;
+        }
+
+        .pr-table {
+        table-layout:fixed;
+        overflow:hidden;
+        white-space: nowrap;
+        widht
+        }
+
+        .pr-id {
+        width: 50px;
+        }
+        .pr-other {
+        width: 150px;
+        }
+        .pr-link {
+        width: 50px;
+        }
+        .pr-title {
+        height: 18px;
+        width : 350px;
+        overflow: hidden;
+        text-overflow: ellipsis;line-height: 1.2857142857142858;
+        }
+
+    </style>
+
+<script src="/public/js/jquery.min.js"></script>
+<script src="/public/js/underscore-min.js"></script>
+<script src="/public/js/backbone-min.js"></script>
+<script>
+  var jobs = new Backbone.Collection;
+  jobs.reset({{ .json }});
+</script>
+<script src="/public/js/bitbucket.js"></script>
 {{template "footer.html" .}}
