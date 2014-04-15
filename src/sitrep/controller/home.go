@@ -4,12 +4,11 @@ import (
 	"encoding/json"
 	"github.com/golang/glog"
 	"github.com/bradfitz/gomemcache/memcache"
-	"github.com/icambridge/framework"
 	"html/template"
 )
 
 type Home struct {
-	framework.Controller
+	Base
 }
 
 func (c Home) Index() string {
@@ -17,12 +16,12 @@ func (c Home) Index() string {
 
 	jobsJson := string(c.getJenkinsJobs().Value)
 
-	return c.Controller.RenderTemplate(w, "index", map[string]interface{}{"jobs": template.JS(jobsJson)})
+	return c.Controller.RenderTemplate("index", map[string]interface{}{"jobs": template.JS(jobsJson)})
 }
 
 func (c Home) getJenkinsJobs() *memcache.Item {
-
-	var memClient memcache.Client = c.Container.Get("memcache")
+	glog.Info("Fetching jenkins info")
+	memClient  := c.Memcache
 	keyStr := "jenkins.jobs.all"
 
 	item, err := memClient.Get(keyStr)
@@ -30,7 +29,7 @@ func (c Home) getJenkinsJobs() *memcache.Item {
 	if err != nil {
 		glog.Info(err)
 	}
-	jenkins := c.Container.Get("jenkins")
+	jenkins := c.Jenkins
 	if item == nil {
 		jobs, err := jenkins.Jobs.GetAll()
 
@@ -39,6 +38,8 @@ func (c Home) getJenkinsJobs() *memcache.Item {
 		}
 
 		json, err := json.Marshal(jobs.Jobs)
+
+		glog.Infof("Found %s",  string(json))
 
 		if err != nil {
 			glog.Error("Tried to turn jobs into json but got %v", err)

@@ -13,13 +13,14 @@ import (
 	"github.com/robfig/config"
 	"sitrep/controller"
 	"sitrep/model"
+	"sitrep"
 )
 
 func main() {
 	flag.Parse()
 
 	hookProcessors := &gobucket.HookObserver{}
-	hookProcessors.Add(&Unapprove{})
+	hookProcessors.Add(&sitrep.Unapprove{})
 
 	cfg, _ := config.ReadDefault("config.cfg")
 
@@ -29,6 +30,8 @@ func main() {
 	jenkinsUser, _ := cfg.String("jenkins", "username")
 	jenkinsHost, _ := cfg.String("jenkins", "hostname")
 	jenkinsToken, _ := cfg.String("jenkins", "token")
+
+	glog.Info(jenkinsHost)
 
 	mysqlUsername, _ := cfg.String("mysql", "username")
 	mysqlPassword, _ := cfg.String("mysql", "password")
@@ -43,16 +46,12 @@ func main() {
 
 	buildModel := model.BuildModel{Db: db}
 
-	container := framework.NewContainer()
-	container.Set("jenkins", jenkins)
-	container.Set("bitbucket", bitbucket)
-	container.Set("memcache", memClient)
-	container.Set("config", cfg)
-	container.Set("model.build", buildModel)
-	container.Set("observer.bitbucket.hooks", hookProcessors)
+
+	base := controller.Base{Memcache: memClient, Jenkins: jenkins, Bitbucket: bitbucket}
 
 	router := framework.NewRouter()
-	router.RegisterController(controller.Home{})
+	router.RegisterController(controller.Home{Base: base})
+	router.RegisterController(controller.Jenkins{Base: base, Model: buildModel})
 
 	app := framework.NewApp(9090)
 	app.RegisterRouter(router)
