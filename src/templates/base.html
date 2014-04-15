@@ -1,0 +1,45 @@
+{{define "base"}}<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{{template "title" .}}</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+
+  </head>
+  <body>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">SitRep</a>  
+      </div>
+      
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li{{if eq .Section "index"}} class="active"{{end}}><a href="/">Home</a></li>
+          <li{{if eq .Section "about"}} class="active"{{end}}><a href="/about">About</a></li>
+        </ul>
+      </div>
+            
+    </div>
+  </nav>
+  <div class="container">
+    <div class="row">
+      {{template "body" .}}
+    </div>
+  </div>  
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/underscore-min.js"></script>
+  <script src="/js/backbone-min.js"></script>
+  <script>
+  var jobs = new Backbone.Collection;
+  jobs.reset({{ .jobs  }});
+</script>
+  <script src="/js/bitbucket.js"></script>
+  </body>
+</html>
+{{end}}

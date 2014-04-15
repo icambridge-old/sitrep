@@ -1,0 +1,21 @@
+{{define "title"}}Pull Requests - SitRep, Jenkins in depth{{end}}
+
+{{define "body"}}
+ <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Id</th>        
+    </thead>
+    <tbody>
+        {{range .prs}}
+            <tr>
+              <td>{{.Title}}</td>
+              <td>{{.Author.DisplayName}}</td>
+              <td>{{.Id}}</td>
+             </tr>
+        {{end}}
+    </tbody>
+</table>
+{{end}}
