@@ -3,8 +3,10 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/revel/revel"
-	"github.com/icambridge/genkins"
+	"sitrep/app/services"
 	"html/template"
+	"time"
+	"fmt"
 )
 
 type App struct {
@@ -13,13 +15,12 @@ type App struct {
 
 func (c App) Index() revel.Result {
 
-	jenkins := genkins.NewClient(
-		revel.Config.StringDefault("jenkins.hostname", ""),
-		revel.Config.StringDefault("jenkins.username", ""),
-		revel.Config.StringDefault("jenkins.token", ""),
-	)
-	jobs, err := jenkins.Jobs.GetAll()
+	jenkins := services.GetJenkins()
 
+	t0 := time.Now()
+	jobs, err := jenkins.Jobs.GetAll()
+	t1 := time.Now()
+	fmt.Printf("The call took %v to run.\n", t1.Sub(t0))
 	if err != nil {
 		revel.TRACE.Printf("/ Jenkins jobs - %v", err)
 	}
