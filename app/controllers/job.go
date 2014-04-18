@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/revel/revel"
 	"sitrep/app/converters"
-	"sitrep/app/entities"
 	"sitrep/app/services"
 	"time"
 )
@@ -30,9 +29,7 @@ func (c Job) Info() revel.Result {
 	}
 	convertedPrs := converters.GobucketToSitRepMultiPrs(prs)
 
-	repoInfo := entities.RepoInfo{PullRequests: convertedPrs}
-
-	jsonData, err := json.Marshal(repoInfo)
+	jsonData, err := json.Marshal(convertedPrs)
 	//	json := template.JS(string(jsonData))
 	json := string(jsonData)
 

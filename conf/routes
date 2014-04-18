@@ -13,6 +13,7 @@ GET     /favicon.ico                            404
 GET     /public/*filepath                       Static.Serve("public")
 
 # Catch all
-GET     /ajax/bitbucket/pullrequests/:jobName   Job.Info
-GET     /jenkins/build/:jobName/*branchName Job.Build
+GET     /job/:jobName   Job.Info
+GET     /job/build/:jobName/*branchName Job.Build
+GET     /build/list                             Build.List
 *       /:controller/:action                    :controller.:action

@@ -5,64 +5,14 @@
             <div class="col-md-3">
                 <ul class="nav nav-pills nav-stacked">
                     <li class="nav-header"><a>Jobs</a></li>
-                    <li class="active"><a href="#">Recognition ClientBundle</a></li>
-                    <li><a href="#">Recognition Client User Application</a></li>
-                    <li><a href="#">Recognition Client Admin Application</a></li>
+                    {{range .jobs}}
+                    <li><a href="#/job/{{.Name}}">{{.Name}}</a></li>
+                    {{end}}
                 </ul>
             </div>
 
 
-            <div class="col-md-9">
-                <header>
-                    <h2>Recognition-ClientBundle</h2>
-                </header>
-
-                <ul class="nav nav-tabs">
-                    <li class="active"><a>Pull Requests</a></li>
-                    <li><a href="#">Branches</a></li>
-                    <li><a href="#">History</a></li>
-                    <li><a href="#">Settings</a></li>
-                </ul>
-                <div class="tab-content">
-                    <table class="table table-hover pr-table">
-                        <thead>
-                        <tr>
-                            <th class="pr-id">ID</th>
-                            <th class="pr-title">Title</th>
-                            <th class="pr-other">Author</th>
-                            <th class="pr-other">Source</th>
-                            <th class="pr-other">Destination</th>
-                            <th class="pd-other">Build Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <tr id="sdf">
-                                <td class="pr-id"><a href="#" target="_blank">#324</a></td>
-                                <td class="pr-title">RECOG-1234 - Test Pull Request</td>
-                                <td class="pr-other">Iain Cambridge</td>
-                                <td class="pr-other">feature/RECOG-1234</td>
-                                <td class="pr-other">develop</td>
-                                <td class="pr-other"><span class="label label-success">SUCCESS</span></td>
-                            </tr>
-                            <tr id="sdf">
-                                <td class="pr-id"><a href="#" target="_blank">#325</a></td>
-                                <td class="pr-title">RECOG-1236 - Hack the gibsons</td>
-                                <td class="pr-other">Iain Cambridge</td>
-                                <td class="pr-other">feature/RECOG-1236</td>
-                                <td class="pr-other">develop</td>
-                                <td class="pr-other"><span class="label label-default">SUCCESS</span></td>
-                            </tr>
-                            <tr id="sdf">
-                                <td class="pr-id"><a href="#" target="_blank">#326</a></td>
-                                <td class="pr-title">RECOG-1235 - Fix bug</td>
-                                <td class="pr-other">Iain Cambridge</td>
-                                <td class="pr-other">feature/RECOG-1235</td>
-                                <td class="pr-other">develop</td>
-                                <td class="pr-other"><span class="label label-danger">FAILURE</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="col-md-9" ng-view>
 
 
             </div>

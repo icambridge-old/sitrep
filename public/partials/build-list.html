@@ -1,0 +1,6 @@
+<ul class="list-group">
+    <li ng-repeat="build in builds" class="list-group-item">
+        <span class="label-success badge">{{build.status}}</span>
+        <a href="#/build/{{build.buildNumber}}">{{build.buildNumber}}</a> - <a href="#/job/{{build.jobId}}">{{build.jobId}}</a>
+    </li>
+</ul>

@@ -1,0 +1,34 @@
+<header>
+    <h2>Recognition-ClientBundle</h2>
+</header>
+
+<ul class="nav nav-tabs">
+    <li class="active"><a>Pull Requests</a></li>
+    <li><a href="#">Branches</a></li>
+    <li><a href="#">History</a></li>
+    <li><a href="#">Settings</a></li>
+</ul>
+<div class="tab-content">
+    <table class="table table-hover pr-table">
+        <thead>
+        <tr>
+            <th class="pr-id">ID</th>
+            <th class="pr-title">Title</th>
+            <th class="pr-other">Author</th>
+            <th class="pr-other">Source</th>
+            <th class="pr-other">Destination</th>
+            <th class="pd-other">Build Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr i ng-repeat="pullRequest in pullRequests">
+            <td class="pr-id"><a href="{{pullRequest.url}}" target="_blank">#{{pullRequest.id}}</a></td>
+            <td class="pr-title">{{pullRequest.title}}</td>
+            <td class="pr-other">{{pullRequest.author}}</td>
+            <td class="pr-other">{{pullRequest.source}}</td>
+            <td class="pr-other">{{pullRequest.destination}}</td>
+            <td class="pr-other"><span class="label label-success">{{pullRequest.status}}</span></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,7 +1,15 @@
 
            </div>
         </div>
-      {{if eq .RunMode "dev"}}
+
+           <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js" type="text/javascript" charset="utf-8"></script>
+           <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-route.js" type="text/javascript" charset="utf-8"></script>
+           <script src="//code.angularjs.org/1.2.0/angular-resource.js" type="text/javascript" charset="utf-8"></script>
+           <script src="/public/js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+           <script src="/public/js/app.js" type="text/javascript" charset="utf-8"></script>
+           <script src="/public/js/services.js" type="text/javascript" charset="utf-8"></script>
+           <script src="/public/js/controllers.js" type="text/javascript" charset="utf-8"></script>
+           {{if eq .RunMode "dev"}}
             {{template "debug.html" .}}
         {{end}}
     </body>
