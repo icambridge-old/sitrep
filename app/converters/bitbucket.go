@@ -42,3 +42,27 @@ func gobucketToSitRepApproval(approvals []gobucket.User) []entities.Approval {
 	}
 	return output
 }
+
+func GobucketToSitRepBranches(branches map[string]*gobucket.Branch) []entities.Branch {
+
+	output := []entities.Branch{}
+
+	for branchName, branch := range branches {
+		newBranch := GobucketToSitRepBranch(branch)
+		newBranch.Name = branchName
+		output = append(output, newBranch)
+	}
+
+	return output
+}
+
+func GobucketToSitRepBranch(branch *gobucket.Branch) entities.Branch {
+
+	outputBranch := entities.Branch{Name: branch.Branch}
+
+
+	outputBranch.Status = "Unknown"
+
+
+	return outputBranch
+}

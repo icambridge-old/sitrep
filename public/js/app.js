@@ -13,11 +13,15 @@ jobApp.config(['$routeProvider',
     $routeProvider.
       when('/builds', {
         templateUrl: '/public/partials/build-list.html',
-        controller: 'JobListCtrl'
+        controller: 'BuildListCtrl'
       }).
       when('/job/:jobId', {
         templateUrl: '/public/partials/job-details.html',
-        controller: 'JobDetailCtrl'
+        controller: 'JobPullRequestsCtrl'
+      }).
+      when('/job/:jobId/branches', {
+        templateUrl: '/public/partials/job-branches.html',
+        controller: 'JobBranchesCtrl'
       }).
       otherwise({
         redirectTo: '/builds'

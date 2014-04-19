@@ -4,13 +4,20 @@
 
 var jobControllers = angular.module('jobControllers', []);
 
-jobControllers.controller('JobListCtrl', ['$scope', 'build',
+jobControllers.controller('BuildListCtrl', ['$scope', 'build',
   function($scope, build) {
     $scope.builds = build.query();
   }]);
 
-jobControllers.controller('JobDetailCtrl', ['$scope', '$routeParams', 'job',
+jobControllers.controller('JobPullRequestsCtrl', ['$scope', '$routeParams', 'job',
   function($scope, $routeParams, job) {
-    $scope.pullRequests = job.get({jobId: $routeParams.jobId});
+      $scope.jobId = $routeParams.jobId
+      $scope.job = job.get({jobId: $routeParams.jobId}, function(job) {});
+
+  }]);
+jobControllers.controller('JobBranchesCtrl', ['$scope', '$routeParams', 'branches',
+  function($scope, $routeParams, branches) {
+      $scope.jobId = $routeParams.jobId
+      $scope.job = branches.get({jobId: $routeParams.jobId}, function(job) {});
 
   }]);

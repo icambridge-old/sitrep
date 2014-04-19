@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/revel/revel"
 	"sitrep/app/converters"
 	"sitrep/app/services"
-	"time"
+	"sitrep/app/entities"
+	"strings"
 )
 
 type Job struct {
@@ -19,20 +19,18 @@ func (c Job) Info() revel.Result {
 	revel.TRACE.Printf("%v", jobName)
 	bitbucketOwner := revel.Config.StringDefault("bitbucket.owner", "")
 	bitbucket := services.GetBitbucket()
-	t0 := time.Now()
+
 	prs, err := bitbucket.PullRequests.GetAll(bitbucketOwner, jobName)
 
-	t1 := time.Now()
-	fmt.Printf("The call took %v to run.\n", t1.Sub(t0))
 	if err != nil {
 		revel.TRACE.Printf("%v", err)
 	}
 	convertedPrs := converters.GobucketToSitRepMultiPrs(prs)
-
-	jsonData, err := json.Marshal(convertedPrs)
-	//	json := template.JS(string(jsonData))
+	entity := entities.RepoInfo{PullRequests: convertedPrs}
+	jsonData, err := json.Marshal(entity)
+	//json := template.JS(string(jsonData))
 	json := string(jsonData)
-
+	c.Request.Format = "json"
 	return c.Render(json)
 }
 
@@ -49,5 +47,28 @@ func (c Job) Build() revel.Result {
 	jenkins.Builds.TriggerWithParameters(jobName, parameters)
 
 	json := "{\"status\":\"Success\"}"
+	return c.Render(json)
+}
+
+func (c Job) Branches() revel.Result {
+	jobName := c.Params.Get("jobName")
+	jobName = strings.ToLower(jobName)
+	revel.TRACE.Printf("%v", jobName)
+	bitbucketOwner := revel.Config.StringDefault("bitbucket.owner", "")
+	bitbucket := services.GetBitbucket()
+
+	branches, err := bitbucket.Repositories.GetBranches(bitbucketOwner, jobName)
+
+	revel.TRACE.Printf("%v", branches["error"])
+
+	if err != nil {
+		revel.TRACE.Printf("%v", err)
+	}
+	convertedPrs := converters.GobucketToSitRepBranches(branches)
+	entity := entities.RepoInfo{Branches: convertedPrs}
+	jsonData, err := json.Marshal(entity)
+	//json := template.JS(string(jsonData))
+	json := string(jsonData)
+	c.Request.Format = "json"
 	return c.Render(json)
 }

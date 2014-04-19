@@ -9,5 +9,7 @@ type Build struct {
 }
 
 func (c Build) List() revel.Result {
+
+	c.Request.Format = "json"
 	return c.Render()
 }

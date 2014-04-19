@@ -28,6 +28,6 @@ type Branch struct {
 
 type RepoInfo struct {
 	Name         string        `json:"name"`
-	PullRequests []PullRequest `json:"pulls"`
+	PullRequests []PullRequest `json:"pull_requests"`
 	Branches     []Branch      `json:"branches"`
 }
