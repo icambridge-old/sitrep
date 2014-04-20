@@ -16,7 +16,7 @@ GET     /public/*filepath                       Static.Serve("public")
 # Catch all
 GET     /job/:jobName   Job.Info
 GET     /job/branches/:jobName   Job.Branches
-GET     /job/build/:jobName/*branchName Job.Build
+GET     /job/build/:jobName/*branchName Build.Start
 GET     /build/list                             Build.List
 *       /jenkins                                Build.Report
 *       /bitbuckets/hook                        Bitbucket.Report

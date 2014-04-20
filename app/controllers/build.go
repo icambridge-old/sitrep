@@ -87,3 +87,21 @@ func (c Build) List() revel.Result {
 	c.Request.Format = "json"
 	return c.Render(json)
 }
+
+
+func (c Build) Start() revel.Result {
+
+	jobName := c.Params.Get("jobName")
+	branch := c.Params.Get("branchName")
+	fmt.Println(branch)
+	fmt.Println(jobName)
+	jenkins := services.GetJenkins()
+
+	p := map[string]string{
+		"branchName": branch,
+	}
+
+	jenkins.Builds.TriggerWithParameters(jobName, p)
+	c.Request.Format = "json"
+	return c.Render()
+}
