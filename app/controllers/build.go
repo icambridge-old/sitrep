@@ -4,11 +4,48 @@ import (
 	"fmt"
 	"encoding/json"
 	"github.com/revel/revel"
+	"github.com/icambridge/genkins"
+	"sitrep/app/services"
 	"sitrep/app/models"
 )
 
 type Build struct {
 	GorpController
+}
+
+func (c Build) Report() revel.Result {
+	job, err := genkins.GetHook(c.Request.Request)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if job.Build.Phase != "FINISHED" {
+		return c.Render()
+	}
+
+	jenkins := services.GetJenkins()
+	info, err := jenkins.Builds.GetInfo(&job.Build)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	branchName := info.GetBranchName()
+
+	b := models.Build{
+		BuildId:         job.Build.Number,
+		ApplicationName: job.Name,
+		Status:          job.Build.Status,
+		Phase:           job.Build.Phase,
+		Branch:          branchName,
+	}
+	err = c.Txn.Insert(&b)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	c.Request.Format = "json"
+	return c.Render()
 }
 
 func (c Build) List() revel.Result {

@@ -6,6 +6,7 @@ import (
 	"github.com/coopernurse/gorp"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/revel/revel"
+	"sitrep/app/models"
 )
 
 var (
@@ -22,6 +23,8 @@ func InitDB() {
 	db, _ := sql.Open("mysql", mysqlDsn)
 	Dbm = &gorp.DbMap{Db:db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
 
+
+	Dbm.AddTableWithName(models.Build{}, "builds").SetKeys(true, "Id")
 }
 
 type GorpController struct {

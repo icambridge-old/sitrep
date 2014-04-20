@@ -18,4 +18,5 @@ GET     /job/:jobName   Job.Info
 GET     /job/branches/:jobName   Job.Branches
 GET     /job/build/:jobName/*branchName Job.Build
 GET     /build/list                             Build.List
+*       /jenkins                                Build.Report
 *       /:controller/:action                    :controller.:action
