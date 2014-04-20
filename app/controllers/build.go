@@ -54,7 +54,7 @@ func (c Build) Report() revel.Result {
 	}
 
 	if pr == nil {
-		return
+		return c.Render()
 	}
 
 	if b.Status == "SUCCESS" {
