@@ -13,3 +13,8 @@ func GetBitbucket() *gobucket.Client {
 
 	return bitbucket
 }
+
+func GetHookProcessor() *gobucket.HookObserver {
+	hookProcessor := &gobucket.HookObserver{}
+	return hookProcessor
+}
