@@ -3,9 +3,11 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/revel/revel"
+	"github.com/revel/revel/cache"
 	"sitrep/app/converters"
 	"sitrep/app/services"
 	"sitrep/app/entities"
+	"github.com/icambridge/gobucket"
 	"strings"
 )
 
@@ -56,19 +58,24 @@ func (c Job) Branches() revel.Result {
 	jobName := c.Params.Get("jobName")
 	jobName = strings.ToLower(jobName)
 	revel.TRACE.Printf("%v", jobName)
-	bitbucketOwner := revel.Config.StringDefault("bitbucket.owner", "")
-	bitbucket := services.GetBitbucket()
+	var branches gobucket.BranchList
+	if err := cache.Get("branches_"+jobName, &branches); err != nil {
 
-	branches, err := bitbucket.Repositories.GetBranches(bitbucketOwner, jobName)
+		bitbucketOwner := revel.Config.StringDefault("bitbucket.owner", "")
+		bitbucket := services.GetBitbucket()
 
-	revel.TRACE.Printf("%v", branches["error"])
+		branches, err := bitbucket.Repositories.GetBranches(bitbucketOwner, jobName)
 
-	if err != nil {
-		revel.TRACE.Printf("%v", err)
+		revel.TRACE.Printf("%v", branches["error"])
+
+		if err != nil {
+			revel.TRACE.Printf("%v", err)
+		}
+		go cache.Set("branches_"+jobName, branches, cache.DEFAULT)
 	}
 	convertedPrs := converters.GobucketToSitRepBranches(branches)
 	entity := entities.RepoInfo{Branches: convertedPrs}
-	jsonData, err := json.Marshal(entity)
+	jsonData, _ := json.Marshal(entity)
 	//json := template.JS(string(jsonData))
 	json := string(jsonData)
 	c.Request.Format = "json"
