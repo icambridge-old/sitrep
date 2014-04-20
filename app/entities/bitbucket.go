@@ -1,18 +1,23 @@
 package entities
 
 
+import (
+	"sitrep/app/models"
+)
+
 type PullRequestList struct {
 	Values []PullRequest `json:"values"`
 }
 
 type PullRequest struct {
-	Title       string     `json:"title"`
-	Author      string     `json:"author"`
-	Source      string     `json:"source"`
-	Destination string     `json:"destination"`
-	Id          int        `json:"id"`
-	Approvals   []Approval `json:"approvals"`
-	Url         string     `json:"url"`
+	Title       string       `json:"title"`
+	Author      string       `json:"author"`
+	Source      string       `json:"source"`
+	Destination string       `json:"destination"`
+	Id          int          `json:"id"`
+	Approvals   []Approval   `json:"approvals"`
+	Url         string       `json:"url"`
+	LastBuild   models.Build `json:"last_build"`
 }
 
 type Approval struct {
@@ -24,6 +29,7 @@ type Branch struct {
 	Name    string `json:"name"`
 	BuildId int    `json:"build_id"`
 	Status  string `json:"status"`
+	LastBuild   models.Build `json:"last_build"`
 }
 
 type RepoInfo struct {

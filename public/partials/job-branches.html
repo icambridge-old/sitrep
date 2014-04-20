@@ -5,8 +5,6 @@
 <ul class="nav nav-tabs">
     <li><a href="#/job/{{jobId}}">Pull Requests</a></li>
     <li class="active"><a href="#/job/{{jobId}}/branches">Branches</a></li>
-    <li><a href="#/job/{{jobId}}/history">History</a></li>
-    <li><a href="#/job/{{jobId}}/settings">Settings</a></li>
 </ul>
 <div class="tab-content">
     <table class="table table-hover pr-table">
@@ -22,11 +20,15 @@
         </thead>
         <tbody>
         <tr ng-repeat="branch in job.branches">
-            <td><span class="glyphicon glyphicon-remove"></span></td>
+            <td class="pr-other" ng-if="branch.last_build.status == 'SUCCESS'"><span class="glyphicon glyphicon-ok"></span></td>
+            <td class="pr-other" ng-if="branch.last_build.status != 'SUCCESS'"><span class="glyphicon glyphicon-remove"></span></td>
+            <td></td>
             <td >{{branch.name}}</td>
-            <td><span class="label label-success">{{branch.status}}</span></td>
-            <td>{{branch.done_at}}</td>
-            <td><a href="#/job/{{jobId}}/build/{{branch.build_id}}" target="_blank">#{{branch.build_id}}</a></td>
+            <td class="pr-other" ng-if="branch.last_build.status == 'SUCCESS'"><span class="label label-success">{{branch.last_build.status}}</span></td>
+            <td class="pr-other" ng-if="branch.last_build.status == 'FAILURE'"><span class="label label-danger">{{branch.last_build.status}}</span></td>
+            <td class="pr-other" ng-if="branch.last_build.status != 'FAILURE' && branch.last_build.status != 'SUCCESS'"><span class="label label-default">{{branch.last_build.status}}</span></td>
+            <td>{{branch.last_build.done_at}}</td>
+            <td><a href="#/job/{{jobId}}/build/{{branch.last_build.build_id}}" target="_blank">#{{branch.last_build.build_id}}</a></td>
             <td><a href="#/job/build/{{jobId}}/{{branch.name}}">Start</a></td>
         </tr>
         <tr ng-show="!job.branches.length">

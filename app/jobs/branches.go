@@ -2,6 +2,7 @@ package jobs
 
 import (
 	"fmt"
+	"time"
 	"strings"
 	"github.com/revel/revel"
 	"github.com/revel/revel/modules/jobs/app/jobs"
@@ -38,6 +39,7 @@ func (j Branches) Run() {
 
 func init() {
 	revel.OnAppStart(func() {
-		jobs.Schedule("*/5 * * * * ?",  Branches{})
+		jobs.Now(Branches{})
+		jobs.Every(5 * time.Minute,  Branches{})
 	})
 }
