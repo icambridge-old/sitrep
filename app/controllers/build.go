@@ -44,6 +44,31 @@ func (c Build) Report() revel.Result {
 	if err != nil {
 		fmt.Println(err)
 	}
+	bitbucket := services.GetBitbucket()
+
+	bitbucketOwner := revel.Config.StringDefault("bitbucket.owner", "")
+	pr, err := bitbucket.PullRequests.GetBranch(bitbucketOwner, b.ApplicationName, b.Branch)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if pr == nil {
+		return
+	}
+
+	if b.Status == "SUCCESS" {
+		err = bitbucket.PullRequests.Approve(bitbucketOwner, b.ApplicationName, pr.Id)
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else if b.Status == "FAILURE" {
+		err = bitbucket.PullRequests.Unapprove(bitbucketOwner, b.ApplicationName, pr.Id)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+
 	c.Request.Format = "json"
 	return c.Render()
 }
