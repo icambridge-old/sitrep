@@ -8,7 +8,7 @@ import (
 )
 
 type App struct {
-	*revel.Controller
+	GorpController
 }
 
 func (c App) Index() revel.Result {

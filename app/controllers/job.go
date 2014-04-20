@@ -10,7 +10,7 @@ import (
 )
 
 type Job struct {
-	*revel.Controller
+	GorpController
 }
 
 func (c Job) Info() revel.Result {
@@ -31,6 +31,8 @@ func (c Job) Info() revel.Result {
 	//json := template.JS(string(jsonData))
 	json := string(jsonData)
 	c.Request.Format = "json"
+
+
 	return c.Render(json)
 }
 
