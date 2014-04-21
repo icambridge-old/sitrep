@@ -36,7 +36,6 @@ type AutoBuild struct {
 
 }
 
-
 func (a AutoBuild) Exec(h *gobucket.Hook) {
 	if len(h.Commits) < 1 {
 		return
@@ -76,4 +75,27 @@ func (a AutoBuild) Exec(h *gobucket.Hook) {
 			return
 		}
 	}
+}
+
+type BranchBuild struct {
+
+}
+
+
+func (b BranchBuild) Exec(h *gobucket.Hook) {
+	if len(h.Commits) < 1 {
+		return
+	}
+	// Todo move to database settings
+	if h.Commits[0].Branch != "develop" && h.Commits[0].Branch != "master" && h.Commits[0].Branch != "release" {
+		return
+	}
+
+	jenkins := services.GetJenkins()
+
+	p := map[string]string{
+		"branchName": h.Commits[0].Branch,
+	}
+
+	jenkins.Builds.TriggerWithParameters(h.Repository.Slug, p)
 }
