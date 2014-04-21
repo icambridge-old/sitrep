@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"encoding/json"
 	"github.com/revel/revel"
 	"github.com/icambridge/genkins"
@@ -18,7 +17,7 @@ func (c Build) Report() revel.Result {
 	job, err := genkins.GetHook(c.Request.Request)
 
 	if err != nil {
-		fmt.Println(err)
+		revel.ERROR.Println(err)
 	}
 
 	if job.Build.Phase != "FINISHED" {
@@ -28,7 +27,7 @@ func (c Build) Report() revel.Result {
 	jenkins := services.GetJenkins()
 	info, err := jenkins.Builds.GetInfo(&job.Build)
 	if err != nil {
-		fmt.Println(err)
+		revel.ERROR.Println(err)
 	}
 	t := time.Now()
 	branchName := info.GetBranchName()
@@ -44,7 +43,7 @@ func (c Build) Report() revel.Result {
 	err = c.Txn.Insert(&b)
 
 	if err != nil {
-		fmt.Println(err)
+		revel.ERROR.Println(err)
 	}
 	bitbucket := services.GetBitbucket()
 
@@ -52,7 +51,7 @@ func (c Build) Report() revel.Result {
 	pr, err := bitbucket.PullRequests.GetBranch(bitbucketOwner, b.ApplicationName, b.Branch)
 
 	if err != nil {
-		fmt.Println(err)
+		revel.ERROR.Println(err)
 	}
 
 	if pr == nil {
@@ -62,12 +61,12 @@ func (c Build) Report() revel.Result {
 	if b.Status == "SUCCESS" {
 		err = bitbucket.PullRequests.Approve(bitbucketOwner, b.ApplicationName, pr.Id)
 		if err != nil {
-			fmt.Println(err)
+			revel.ERROR.Println(err)
 		}
 	} else if b.Status == "FAILURE" {
 		err = bitbucket.PullRequests.Unapprove(bitbucketOwner, b.ApplicationName, pr.Id)
 		if err != nil {
-			fmt.Println(err)
+			revel.ERROR.Println(err)
 		}
 	}
 
@@ -83,7 +82,6 @@ func (c Build) List() revel.Result {
 		panic(err)
 	}
 
-	fmt.Println(len(builds))
 	jsonData, err := json.Marshal(builds)
 	json := string(jsonData)
 	c.Request.Format = "json"
@@ -95,8 +93,7 @@ func (c Build) Start() revel.Result {
 
 	jobName := c.Params.Get("jobName")
 	branch := c.Params.Get("branchName")
-	fmt.Println(branch)
-	fmt.Println(jobName)
+
 	jenkins := services.GetJenkins()
 
 	p := map[string]string{

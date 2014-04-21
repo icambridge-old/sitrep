@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/revel/revel"
 	"sitrep/app/services"
 	"sitrep/app/hooks"
@@ -20,7 +19,7 @@ func (c Bitbucket) Report() revel.Result {
 	h, err := gobucket.GetHookData(payload)
 
 	if err != nil {
-		fmt.Println(err)
+		revel.ERROR.Println(err)
 	}
 
 	processor := services.GetHookProcessor()

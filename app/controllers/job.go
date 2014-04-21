@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/revel/revel"
 	"github.com/revel/revel/cache"
 	"sitrep/app/converters"
@@ -63,14 +62,14 @@ func (c Job) getBuildInfoForBranches(jobName string, branches []entities.Branch)
 
 func (c Job) getBranchBuild(jobName string, branchName string) models.Build {
 	var build models.Build
-	err := c.Txn.SelectOne(&build, `SELECT * FROM builds WHERE application_name = ? AND branch = ? ORDER BY id DESC`, jobName, branchName)
+	err := c.Txn.SelectOne(&build, `SELECT * FROM builds WHERE application_name = ? AND branch = ? ORDER BY id DESC LIMIT 0,1`, jobName, branchName)
 
 	if err != nil && err == sql.ErrNoRows {
 		build.Status = "None"
 	}
 
 	if err != nil && err != sql.ErrNoRows {
-		fmt.Println("Branches - %v", err)
+		revel.ERROR.Println("Branches - %v", err)
 	}
 
 	return build
@@ -100,16 +99,13 @@ func (c Job) Branches() revel.Result {
 	var branches gobucket.BranchList
 
 	if err := cache.Get("branches_"+jobName, &branches); err != nil || branches == nil {
-		fmt.Println("Hello world")
 		bitbucketOwner := revel.Config.StringDefault("bitbucket.owner", "")
 		bitbucket := services.GetBitbucket()
 
 		b, err := bitbucket.Repositories.GetBranches(bitbucketOwner, jobName)
 
-		revel.TRACE.Printf("%v", b)
-
 		if err != nil {
-			revel.TRACE.Printf("%v", err)
+			revel.ERROR.Printf("%v", err)
 		}
 		go cache.Set("branches_"+jobName, b, cache.DEFAULT)
 		branches = b
