@@ -22,7 +22,6 @@
         <tr ng-repeat="branch in job.branches | orderBy:timestamp">
             <td class="pr-other" ng-if="branch.last_build.status == 'SUCCESS'"><span class="glyphicon glyphicon-ok"></span></td>
             <td class="pr-other" ng-if="branch.last_build.status != 'SUCCESS'"><span class="glyphicon glyphicon-remove"></span></td>
-            <td></td>
             <td >{{branch.name}}</td>
             <td class="pr-other" ng-if="branch.last_build.status == 'SUCCESS'"><span class="label label-success">{{branch.last_build.status}}</span></td>
             <td class="pr-other" ng-if="branch.last_build.status == 'FAILURE'"><span class="label label-danger">{{branch.last_build.status}}</span></td>

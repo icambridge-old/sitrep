@@ -24,8 +24,9 @@ func (c Bitbucket) Report() revel.Result {
 	}
 
 	processor := services.GetHookProcessor()
-
+	// todo move to a centralized location.
 	processor.Add(&hooks.Unapprove{})
+	processor.Add(&hooks.AutoBuild{})
 	processor.Process(h)
 	return c.Render()
 }
