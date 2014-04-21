@@ -27,7 +27,7 @@
             <td class="pr-other" ng-if="branch.last_build.status == 'FAILURE'"><span class="label label-danger">{{branch.last_build.status}}</span></td>
             <td class="pr-other" ng-if="branch.last_build.status != 'FAILURE' && branch.last_build.status != 'SUCCESS'"><span class="label label-default">{{branch.last_build.status}}</span></td>
             <td>{{branch.last_build.done_at}}</td>
-            <td><a href="#/job/{{jobId}}/build/{{branch.last_build.build_id}}" target="_blank">#{{branch.last_build.build_id}}</a></td>
+            <td><a href="/job/build/{{jobId}}/{{branch.last_build.build_id}}" target="_blank">#{{branch.last_build.build_id}}</a></td>
             <td><a href="#/job/build/{{jobId}}/{{branch.name}}">Start</a></td>
         </tr>
         <tr ng-show="!job.branches.length">
