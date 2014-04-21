@@ -7,6 +7,7 @@ import (
 	"github.com/icambridge/genkins"
 	"sitrep/app/services"
 	"sitrep/app/models"
+	"time"
 )
 
 type Build struct {
@@ -29,7 +30,7 @@ func (c Build) Report() revel.Result {
 	if err != nil {
 		fmt.Println(err)
 	}
-
+	t := time.Now()
 	branchName := info.GetBranchName()
 
 	b := models.Build{
@@ -38,6 +39,7 @@ func (c Build) Report() revel.Result {
 		Status:          job.Build.Status,
 		Phase:           job.Build.Phase,
 		Branch:          branchName,
+		DoneAt:          t.Format("2006-01-02 15:04:05"),
 	}
 	err = c.Txn.Insert(&b)
 
