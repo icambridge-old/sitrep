@@ -98,6 +98,7 @@ func (c Job) Branches() revel.Result {
 	jobName = strings.ToLower(jobName)
 	revel.TRACE.Printf("%v", jobName)
 	var branches gobucket.BranchList
+
 	if err := cache.Get("branches_"+jobName, &branches); err != nil {
 
 		bitbucketOwner := revel.Config.StringDefault("bitbucket.owner", "")

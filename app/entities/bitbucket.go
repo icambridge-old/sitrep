@@ -26,9 +26,10 @@ type Approval struct {
 }
 
 type Branch struct {
-	Name    string `json:"name"`
-	BuildId int    `json:"build_id"`
-	Status  string `json:"status"`
+	Name    string           `json:"name"`
+	BuildId int              `json:"build_id"`
+	Status  string           `json:"status"`
+	Timestamp int64          `json:"timestamp"`
 	LastBuild   models.Build `json:"last_build"`
 }
 
