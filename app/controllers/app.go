@@ -3,8 +3,6 @@ package controllers
 import (
 	"github.com/revel/revel"
 	"sitrep/app/services"
-	"time"
-	"fmt"
 )
 
 type App struct {
