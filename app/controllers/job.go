@@ -99,24 +99,24 @@ func (c Job) Branches() revel.Result {
 	revel.TRACE.Printf("%v", jobName)
 	var branches gobucket.BranchList
 
-	if err := cache.Get("branches_"+jobName, &branches); err != nil {
-
+	if err := cache.Get("branches_"+jobName, &branches); err != nil || branches == nil {
+		fmt.Println("Hello world")
 		bitbucketOwner := revel.Config.StringDefault("bitbucket.owner", "")
 		bitbucket := services.GetBitbucket()
 
-		branches, err := bitbucket.Repositories.GetBranches(bitbucketOwner, jobName)
+		b, err := bitbucket.Repositories.GetBranches(bitbucketOwner, jobName)
 
-		revel.TRACE.Printf("%v", branches["error"])
+		revel.TRACE.Printf("%v", b)
 
 		if err != nil {
 			revel.TRACE.Printf("%v", err)
 		}
-		go cache.Set("branches_"+jobName, branches, cache.DEFAULT)
+		go cache.Set("branches_"+jobName, b, cache.DEFAULT)
+		branches = b
 	}
 	convertedBranches := converters.GobucketToSitRepBranches(branches)
 
 	convertedBranches = c.getBuildInfoForBranches(jobName, convertedBranches)
-
 	entity := entities.RepoInfo{Branches: convertedBranches}
 	jsonData, _ := json.Marshal(entity)
 	//json := template.JS(string(jsonData))
