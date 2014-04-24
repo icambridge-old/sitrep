@@ -7,6 +7,7 @@ import (
 	"sitrep/app/services"
 	"sitrep/app/models"
 	"time"
+	"strings"
 )
 
 type Build struct {
@@ -107,9 +108,9 @@ func (c Build) Start() revel.Result {
 
 func (c Build) Branch() revel.Result {
 
-	branch := c.Params.Get("branchName")
+	branch := strings.ToLower(c.Params.Get("branchName"))
 	var builds []models.Build
-	_, err := c.Txn.Select(&builds, `SELECT * FROM builds WHERE branch = ? GROUP BY application_name ORDER BY id DESC LIMIT 0,10`, branch)
+	_, err := c.Txn.Select(&builds, `SELECT * FROM builds WHERE phase = 'FINISHED' AND branch = ? GROUP BY application_name ORDER BY id DESC LIMIT 0,10`, branch)
 
 	if err != nil {
 		panic(err)

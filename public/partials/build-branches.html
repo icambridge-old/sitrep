@@ -1,0 +1,37 @@
+<header>
+    <h2>{{branchName}}</h2>
+</header>
+
+<ul class="nav nav-tabs">
+    <li><a href="#/job/{{jobId}}">Pull Requests</a></li>
+    <li class="active"><a href="#/job/{{jobId}}/branches">Branches</a></li>
+</ul>
+<div class="tab-content">
+    <table class="table table-hover pr-table">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Last Build Status</th>
+            <th>Last Build At</th>
+            <th>Build ID</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="build in builds.builds">
+            <td class="pr-other" ng-if="build.status == 'SUCCESS'"><span class="glyphicon glyphicon-ok"></span></td>
+            <td class="pr-other" ng-if="build.status != 'SUCCESS'"><span class="glyphicon glyphicon-remove"></span></td>
+            <td >{{build.job_name}}</td>
+            <td class="pr-other" ng-if="build.status == 'SUCCESS'"><span class="label label-success">{{build.status}}</span></td>
+            <td class="pr-other" ng-if="build.status == 'FAILURE'"><span class="label label-danger">{{build.status}}</span></td>
+            <td class="pr-other" ng-if="build.status != 'FAILURE' && build.status != 'SUCCESS'"><span class="label label-default">{{build.status}}</span></td>
+            <td>{{build.done_at}}</td>
+            <td><a href="#/job/{{branch.job_name}}build//{{build.build_id}}" target="_blank">#{{build.build_id}}</a></td>
+
+        </tr>
+        <tr ng-show="!builds.builds.length">
+            <td colspan="6">Fetching branches.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

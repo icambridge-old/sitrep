@@ -24,3 +24,10 @@ jobServices.factory('build', ['$resource',
         query: {method:'GET', params:{buildId:'list'}, isArray:true}
       });
     }]);
+
+jobServices.factory('buildBranches', ['$resource',
+    function($resource){
+        return $resource('/build/branch/:branchName', {}, {
+            query: {method:'GET', params:{branchName:'develop'}, isArray:true}
+          });
+    }]);

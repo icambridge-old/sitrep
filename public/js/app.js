@@ -23,6 +23,10 @@ jobApp.config(['$routeProvider',
         templateUrl: '/public/partials/job-branches.html',
         controller: 'JobBranchesCtrl'
       }).
+      when('/build/branches/:branchName', {
+        templateUrl: '/public/partials/build-branches.html',
+        controller: 'BuildBranchesCtrl'
+      }).
       otherwise({
         redirectTo: '/builds'
       });

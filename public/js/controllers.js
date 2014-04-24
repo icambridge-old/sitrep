@@ -21,3 +21,9 @@ jobControllers.controller('JobBranchesCtrl', ['$scope', '$routeParams', 'branche
       $scope.job = branches.get({jobId: $routeParams.jobId}, function(job) {});
 
   }]);
+jobControllers.controller('BuildBranchesCtrl', ['$scope', '$routeParams', 'buildBranches',
+    function($scope, $routeParams, builds) {
+        $scope.branchName = $routeParams.branchName
+        $scope.builds = builds.get({branchName: $routeParams.branchName}, function(job) {});
+
+    }]);
