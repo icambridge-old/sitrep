@@ -104,3 +104,19 @@ func (c Build) Start() revel.Result {
 	c.Request.Format = "json"
 	return c.Render()
 }
+
+func (c Build) Branch() revel.Result {
+
+	branch := c.Params.Get("branchName")
+	var builds []models.Build
+	_, err := c.Txn.Select(&builds, `SELECT * FROM builds WHERE branch = ? GROUP BY application_name ORDER BY id DESC LIMIT 0,10`, branch)
+
+	if err != nil {
+		panic(err)
+	}
+
+	jsonData, err := json.Marshal(builds)
+	json := string(jsonData)
+	c.Request.Format = "json"
+	return c.Render(json)
+}
