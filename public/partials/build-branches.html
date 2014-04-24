@@ -18,7 +18,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="build in builds.builds">
+        <tr ng-repeat="build in response.builds">
             <td class="pr-other" ng-if="build.status == 'SUCCESS'"><span class="glyphicon glyphicon-ok"></span></td>
             <td class="pr-other" ng-if="build.status != 'SUCCESS'"><span class="glyphicon glyphicon-remove"></span></td>
             <td >{{build.job_name}}</td>
@@ -29,7 +29,7 @@
             <td><a href="#/job/{{branch.job_name}}build//{{build.build_id}}" target="_blank">#{{build.build_id}}</a></td>
 
         </tr>
-        <tr ng-show="!builds.builds.length">
+        <tr ng-show="!response.builds.length">
             <td colspan="6">Fetching branches.</td>
         </tr>
         </tbody>

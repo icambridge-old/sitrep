@@ -24,6 +24,6 @@ jobControllers.controller('JobBranchesCtrl', ['$scope', '$routeParams', 'branche
 jobControllers.controller('BuildBranchesCtrl', ['$scope', '$routeParams', 'buildBranches',
     function($scope, $routeParams, builds) {
         $scope.branchName = $routeParams.branchName
-        $scope.builds = builds.get({branchName: $routeParams.branchName}, function(job) {});
+        $scope.response = builds.get({branchName: $routeParams.branchName}, function(job) {});
 
     }]);
