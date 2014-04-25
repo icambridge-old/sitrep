@@ -92,3 +92,13 @@ func (c App) getBranchBuild(jobName string, branchName string) models.Build {
 
 	return build
 }
+func (c App) getSetting(name string) *models.Setting {
+
+	var setting models.Setting
+	err := c.Txn.SelectOne(&setting, `SELECT * FROM system_setting WHERE name = ? LIMIT 0,1`, name)
+
+	if err != nil && err != sql.ErrNoRows {
+		revel.ERROR.Println("Branches - %v", err)
+	}
+	return &setting
+}
